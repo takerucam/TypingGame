@@ -1,65 +1,39 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
-  <title>Type 100 words Globish</title>
+  <meta name="タイピングゲーム">
+  <title>タイピングゲーム</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
   <div class="container">
-    <div id="timer"></div>
-    <div id="cnt"></div>
+    <div id="timer"></div>    
   </div>
 
   <div class="typingContainer">
-    <p id="target"></p>
-    <p id="targetja"></p>
+    <p id="target" class="cursor"></p>
     <p id="result"></p>
-    <p id="restart"></p>
+    <p id="restart" class="cursor"></p>
   </div>
 
-  <footer>
-    <p>DATA: <a href=https://github.com/taisukef/globish/>globishwords (CSV)</a></p>
-    <p>App: <a href=https://github.com/taisukef/TypingGame/>Type 100 words Globish</a> by <a href=https://fukuno.jig.jp/3124>@taisukef</a> - forked from "<a href=https://github.com/takerucam/TypingGame>TypingGame</a>"</p>
-    <p>Globish 1500単語からランダム100単語を早打ちするゲームです。クリックの替わりにエンターで進められます。ESCキーでやり直し可能。2分切れるか!?</p>
-  </footer>
-
   <script type="module">
-    import { CSV } from "https://code4sabae.github.io/js/CSV.js";
-
     window.onload = async () => {
-      const words = CSV.toJSON(await CSV.fetch("https://taisukef.github.io/globish/globishwords.csv"));
-      const wcnt = Math.min(words.length, 100);
-
       for (;;) {
         target.textContent = "Click to Start!"
-        cnt.textContent = `0/${wcnt}`;
         const t = new Timer(timer);
+        const words = ['red', 'blue', 'yellow'];
         await waitClickOrEnter(target);
         shuffle(words);
         t.start();
-        let escflg = false;
-        A: for (let i = 0; i < wcnt; i++) {
-          const w = words[i];
-          const word = w.en;
+        for (let i = 0; i < words.length; i++) {
+          const word = words[i];
           target.textContent = word;
-          targetja.textContent = w.ja;
           for (let j = 0; j < word.length; j++) {
-            for (;;) {
-              const c = await waitKeyDown();
-              if (c == word[j]) {
-                break;
-              }
-              if (c == "Escape") {
-                escflg = true;
-                break A;
-              }
-            }
+            while (word[j] != await waitKeyDown());
             target.textContent = '_'.repeat(j + 1) + word.substring(j + 1);
           }
-          targetja.textContent = "";
-          cnt.textContent = `${i + 1}/${wcnt}`;
         }
         t.stop();
-        result.textContent = escflg ? "" : "Congratulations!!";
+        result.textContent = "Congratulations!!";
         restart.textContent = "もう一度挑戦する";
         await waitClickOrEnter(restart);
         result.textContent = "";

@@ -12,6 +12,17 @@ body {
   text-align: center;
 }
 
+footer {
+  text-align: center;
+  font-size: 85%;
+  margin: 20px auto;
+  padding: 15px;
+  text-align: center;
+}
+footer a {
+  color: gray !important;
+}
+
 #timer {
   background: #ddd;
   height: 120px;
