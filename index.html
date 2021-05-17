@@ -82,8 +82,8 @@
       return new Promise((resolve) => {
         comp.classList.add("cursor");
         document.onkeydown = (e) => {
-          document.onkeydown = null;
           if (e.key == "Enter") {
+            document.onkeydown = null;
             resolve();
           }
         };
