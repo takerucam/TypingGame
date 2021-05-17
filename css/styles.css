@@ -62,5 +62,6 @@ footer a {
 }
 
 #result {
+  word-break: break-all;
   font-size: 64px;
 }
