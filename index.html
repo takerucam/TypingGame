@@ -17,17 +17,19 @@
   </div>
 
   <footer>
+    <p>Globish 1500単語からランダム100単語を早打ちするゲームです。クリックの替わりにエンターで進められます。ESCキーでやり直し可能。2分切れるか!?</p>
     <p>DATA: <a href=https://github.com/taisukef/globish/>globishwords (CSV)</a></p>
     <p>App: <a href=https://github.com/taisukef/TypingGame/>Type 100 words Globish</a> by <a href=https://fukuno.jig.jp/3124>@taisukef</a> - forked from "<a href=https://github.com/takerucam/TypingGame>TypingGame</a>"</p>
-    <p>Globish 1500単語からランダム100単語を早打ちするゲームです。クリックの替わりにエンターで進められます。ESCキーでやり直し可能。2分切れるか!?</p>
+    <p>Lib: <a href=https://github.com/taisukef/say.js/>音声読み上げ - say.js</a></p>
   </footer>
 
   <script type="module">
     import { CSV } from "https://code4sabae.github.io/js/CSV.js";
+    import { say } from "https://taisukef.github.io/say.js/say.js";
 
     window.onload = async () => {
       const words = CSV.toJSON(await CSV.fetch("https://taisukef.github.io/globish/globishwords.csv"));
-      const wcnt = Math.min(words.length, 100);
+      const wcnt = Math.min(words.length, document.location.hash.substring(1) || 100);
 
       for (;;) {
         target.textContent = "Click to Start!"
@@ -40,6 +42,7 @@
         A: for (let i = 0; i < wcnt; i++) {
           const w = words[i];
           const word = w.en;
+          say(word, "en-US");
           target.textContent = word;
           targetja.textContent = w.ja;
           for (let j = 0; j < word.length; j++) {
@@ -62,8 +65,7 @@
         result.textContent = escflg ? "" : "Congratulations!!";
         restart.textContent = "もう一度挑戦する";
         await waitClickOrEnter(restart);
-        result.textContent = "";
-        restart.textContent = "";
+        result.textContent = restart.textContent = target.textContent = targetja.textContent = "";
       }
     };
 
@@ -82,8 +84,8 @@
       return new Promise((resolve) => {
         comp.classList.add("cursor");
         document.onkeydown = (e) => {
-          document.onkeydown = null;
           if (e.key == "Enter") {
+            document.onkeydown = null;
             resolve();
           }
         };
